@@ -13,7 +13,7 @@ import {
 } from './ui/dropdown-menu';
 
 export function Header() {
-  const { user, logout, userRole, setUserRole } = useApp();
+  const { user, logout, userRole } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,7 +27,7 @@ export function Header() {
   const getNavItems = () => {
     const commonItems = [{ path: '/', label: 'Home', icon: Home }];
 
-    if (userRole === 'Admin') {
+    if (userRole === 'ADMIN') {
       return [
         ...commonItems,
         { path: '/admin-dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -35,7 +35,7 @@ export function Header() {
       ];
     }
 
-    if (userRole === 'Financial Advisor') {
+    if (userRole === 'ADVISOR') {
       return [
         ...commonItems,
         { path: '/advisor-dashboard', label: 'My Clients', icon: Users },
@@ -55,16 +55,16 @@ export function Header() {
 
   const navItems = getNavItems();
   const roleOptions: Array<{ value: typeof userRole; label: string }> = [
-    { value: 'User', label: '👤 Regular User' },
-    { value: 'Financial Advisor', label: '👩‍💼 Financial Advisor' },
-    { value: 'Admin', label: '👨‍💼 Administrator' },
+    { value: 'USER', label: '👤 Regular User' },
+    { value: 'ADVISOR', label: '👩‍💼 Financial Advisor' },
+    { value: 'ADMIN', label: '👨‍💼 Administrator' },
   ];
 
   const getRoleColor = () => {
     switch (userRole) {
-      case 'Admin':
+      case 'ADMIN':
         return 'bg-red-500/20 text-red-700 border-red-200';
-      case 'Financial Advisor':
+      case 'ADVISOR':
         return 'bg-blue-500/20 text-blue-700 border-blue-200';
       default:
         return 'bg-green-500/20 text-green-700 border-green-200';
@@ -144,7 +144,6 @@ export function Header() {
                     <DropdownMenuItem
                       key={role.value}
                       onClick={() => {
-                        setUserRole(role.value);
                         navigate('/');
                       }}
                       className="cursor-pointer text-white focus:bg-white/10"
@@ -159,10 +158,13 @@ export function Header() {
 
                 <DropdownMenuSeparator className="bg-white/10" />
 
-                {/* Settings */}
-                <DropdownMenuItem className="cursor-pointer text-white focus:bg-white/10">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
+                {/* Account Details */}
+                <DropdownMenuItem 
+                  onClick={() => navigate('/profile')}
+                  className="cursor-pointer text-white focus:bg-white/10"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Account Details
                 </DropdownMenuItem>
 
                 {/* Logout */}

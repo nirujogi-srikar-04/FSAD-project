@@ -9,39 +9,58 @@ import { Badge } from '../components/ui/badge';
 import { ArrowLeft, Save, Lock, LogOut, Mail, Phone, User, Calendar } from 'lucide-react';
 
 export function UserProfilePage() {
-  const { user, logout } = useApp();
+  const { user, logout, changePassword, deleteAccount } = useApp();
   const navigate = useNavigate();
 
-  const [password, setPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [phone, setPhone] = useState(user?.phone || '+91 XXXXX XXXXX');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'logout'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'danger'>('profile');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleSaveProfile = () => {
     setSuccess('Profile updated successfully');
     setTimeout(() => setSuccess(''), 3000);
   };
 
-  const handleChangePassword = () => {
-    if (!password) {
-      setError('Please enter a new password');
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword) {
+      setError('Please fill in both current and new passwords');
       return;
     }
-    if (password !== confirmPassword) {
+    if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+    
+    setLoading(true);
     setError('');
-    setSuccess('Password changed successfully');
-    setPassword('');
-    setConfirmPassword('');
-    setTimeout(() => setSuccess(''), 3000);
+    const result = await changePassword(currentPassword, newPassword);
+    setLoading(false);
+    
+    if (result.success) {
+      setSuccess('Password changed successfully');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => setSuccess(''), 3000);
+    } else {
+      setError(result.error || 'Failed to change password');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setLoading(true);
+    const result = await deleteAccount();
+    if (result.success) {
+      navigate('/login');
+    } else {
+      setError(result.error || 'Failed to delete account');
+      setLoading(false);
+    }
   };
 
   const handleLogout = () => {
@@ -111,15 +130,14 @@ export function UserProfilePage() {
               Security
             </button>
             <button
-              onClick={() => setActiveTab('logout')}
+              onClick={() => setActiveTab('danger')}
               className={`rounded-lg px-4 py-2 font-medium transition-colors ${
-                activeTab === 'logout'
-                  ? 'bg-red-600 text-white'
-                  : 'bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-red-100'
+                activeTab === 'danger'
+                  ? 'bg-red-600 text-white shadow-lg'
+                  : 'bg-[var(--color-surface)] text-red-500 hover:bg-red-500/10'
               }`}
             >
-              <LogOut className="mr-2 inline h-4 w-4" />
-              Logout
+              Account Actions
             </button>
           </div>
 
@@ -167,14 +185,27 @@ export function UserProfilePage() {
                     </Label>
                     <Input
                       type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+91 XXXXX XXXXX"
+                      value={user?.phoneNumber || 'Not provided'}
+                      disabled
                       className="border-[var(--color-border-subtle)] bg-[var(--color-bg)] dark:border-white/10"
                     />
                   </div>
 
-                  {/* Member Since */}
+                  {/* Age */}
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2 font-semibold text-[var(--color-text-primary)]">
+                      <Calendar className="h-4 w-4" />
+                      Age
+                    </Label>
+                    <Input
+                      type="text"
+                      value={user?.age || 'Not provided'}
+                      disabled
+                      className="border-[var(--color-border-subtle)] bg-[var(--color-bg)] dark:border-white/10"
+                    />
+                  </div>
+
+                  {/* Member Since (Mock as backend doesn't store yet) */}
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2 font-semibold text-[var(--color-text-primary)]">
                       <Calendar className="h-4 w-4" />
@@ -182,23 +213,13 @@ export function UserProfilePage() {
                     </Label>
                     <Input
                       type="text"
-                      value={user?.createdAt || new Date().toLocaleDateString()}
+                      value={new Date().toLocaleDateString()}
                       disabled
                       className="border-[var(--color-border-subtle)] bg-[var(--color-bg)] dark:border-white/10"
                     />
                   </div>
                 </div>
 
-                {/* Save Button */}
-                <div className="flex justify-end gap-2 border-t border-[var(--color-border-subtle)] pt-6">
-                  <Button
-                    onClick={handleSaveProfile}
-                    className="gap-2 bg-[var(--color-accent)] text-white hover:opacity-95"
-                  >
-                    <Save className="h-4 w-4" />
-                    Save Changes
-                  </Button>
-                </div>
               </div>
             </Card>
           )}
@@ -215,6 +236,21 @@ export function UserProfilePage() {
                 </div>
 
                 <div className="space-y-4">
+                  {/* Current Password */}
+                  <div className="space-y-2">
+                    <Label htmlFor="current-password" className="font-semibold text-[var(--color-text-primary)]">
+                      Current Password
+                    </Label>
+                    <Input
+                      id="current-password"
+                      type="password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="Enter current password"
+                      className="border-[var(--color-border-subtle)] bg-[var(--color-bg)] dark:border-white/10"
+                    />
+                  </div>
+
                   {/* New Password */}
                   <div className="space-y-2">
                     <Label htmlFor="new-password" className="font-semibold text-[var(--color-text-primary)]">
@@ -223,8 +259,8 @@ export function UserProfilePage() {
                     <Input
                       id="new-password"
                       type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Enter new password"
                       className="border-[var(--color-border-subtle)] bg-[var(--color-bg)] dark:border-white/10"
                     />
@@ -260,65 +296,84 @@ export function UserProfilePage() {
                 <div className="flex justify-end gap-2 border-t border-[var(--color-border-subtle)] pt-6">
                   <Button
                     onClick={handleChangePassword}
+                    disabled={loading}
                     className="gap-2 bg-[var(--color-accent)] text-white hover:opacity-95"
                   >
-                    <Lock className="h-4 w-4" />
-                    Update Password
+                    {loading ? 'Updating...' : <><Lock className="h-4 w-4" /> Update Password</>}
                   </Button>
                 </div>
               </div>
             </Card>
           )}
 
-          {/* Logout Tab */}
-          {activeTab === 'logout' && (
-            <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
-              <div className="space-y-6">
-                <div className="rounded-lg border border-red-300/30 bg-red-50 p-6">
-                  <h3 className="mb-2 text-lg font-bold text-red-900">Logout Session</h3>
-                  <p className="text-red-800">
-                    You are about to logout from your account. You will be required to enter your credentials again to access your account.
-                  </p>
-                </div>
-
-                <div className="space-y-4 border-t border-[var(--color-border-subtle)] pt-6">
-                  <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">
-                      Session Information:
-                    </p>
-                    <ul className="mt-2 space-y-2 text-sm text-[var(--color-text-secondary)]">
-                      <li>
-                        <strong>Account:</strong> {user?.email}
-                      </li>
-                      <li>
-                        <strong>Role:</strong> {user?.role}
-                      </li>
-                      <li>
-                        <strong>Status:</strong> <span className="text-green-600">Active</span>
-                      </li>
-                    </ul>
+          {/* Danger Tab */}
+          {activeTab === 'danger' && (
+            <div className="space-y-6">
+              <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                <div className="space-y-6">
+                  <div className="border-b border-[var(--color-border-subtle)] pb-4">
+                    <h3 className="flex items-center gap-2 text-lg font-semibold text-[var(--color-text-primary)]">
+                      <LogOut className="h-5 w-5" />
+                      Session Control
+                    </h3>
                   </div>
-                </div>
-
-                {/* Logout Button */}
-                <div className="flex justify-end gap-2 border-t border-[var(--color-border-subtle)] pt-6">
-                  <Button
-                    variant="outline"
-                    onClick={() => setActiveTab('profile')}
-                    className="text-[var(--color-text-primary)]"
-                  >
-                    Cancel
-                  </Button>
+                  <p className="text-sm text-[var(--color-text-secondary)]">
+                    Logout from your current session on this device.
+                  </p>
                   <Button
                     onClick={handleLogout}
-                    className="gap-2 bg-red-600 text-white hover:bg-red-700"
+                    variant="outline"
+                    className="w-full border-white/10 text-white hover:bg-white/5"
                   >
-                    <LogOut className="h-4 w-4" />
-                    Logout Now
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout Securely
                   </Button>
                 </div>
-              </div>
-            </Card>
+              </Card>
+
+              <Card className="border-red-500/20 bg-red-500/5 p-6 shadow-sm">
+                <div className="space-y-6">
+                  <div className="border-b border-red-500/20 pb-4">
+                    <h3 className="text-lg font-bold text-red-500">Danger Zone</h3>
+                  </div>
+                  
+                  {!showDeleteConfirm ? (
+                    <div className="space-y-4">
+                      <p className="text-sm text-red-400">
+                        Once you delete your account, there is no going back. Please be certain.
+                      </p>
+                      <Button
+                        onClick={() => setShowDeleteConfirm(true)}
+                        className="w-full bg-red-600 font-bold text-white hover:bg-red-700"
+                      >
+                        Delete My Account
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 animate-in fade-in zoom-in-95">
+                      <p className="text-sm font-bold text-red-500">
+                        Are you absolutely sure? This will permanently delete all your data.
+                      </p>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => setShowDeleteConfirm(false)}
+                          className="flex-1 bg-white/10 text-white"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleDeleteAccount}
+                          disabled={loading}
+                          className="flex-1 bg-red-600 text-white hover:bg-red-700"
+                        >
+                          {loading ? 'Deleting...' : 'Yes, Delete Account'}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </div>
           )}
         </div>
       </div>

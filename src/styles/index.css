@@ -1,3 +1,28 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+@layer components {
+  /* Ambient gradient background for root */
+  .bg-ambient {
+    background: radial-gradient(circle at top left, var(--color-secondary) 0%, transparent 25%),
+                radial-gradient(circle at bottom right, var(--color-primary) 0%, transparent 25%);
+    background-color: var(--color-bg);
+  }
+
+  /* Glassmorphic card styling for premium depth */
+  .glass-card {
+    background: rgba(20, 24, 41, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-card:hover {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(20, 24, 41, 0.85);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+  }
+}

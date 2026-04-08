@@ -19,14 +19,6 @@ export function DashboardPage() {
     funds: 4,
   });
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login', { replace: true });
-  };
-
-  const handleSettings = () => {
-    navigate('/settings');
-  };
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
@@ -46,27 +38,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="flex flex-wrap gap-2">
-              <Button
-                onClick={handleSettings}
-                variant="outline"
-                size="sm"
-                className="gap-2 border-white/30 bg-white/10 text-white hover:bg-white/20"
-              >
-                <Settings className="h-4 w-4" />
-                Settings
-              </Button>
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="gap-2 border-white/30 bg-white/10 text-white hover:bg-white/20"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout
-              </Button>
-            </div>
           </div>
         </div>
       </div>
