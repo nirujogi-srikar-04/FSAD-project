@@ -45,65 +45,154 @@ export function DashboardPage() {
       {/* Main Content */}
       <div className="py-8 md:py-12">
         <div className="container mx-auto max-w-[var(--container-max)] px-4">
-          {/* Portfolio Summary */}
+          {/* Role-Based Dashboard Metrics */}
           <div className="mb-8">
-            <h2 className="mb-4 text-2xl font-bold text-[var(--color-text-primary)]">Your Portfolio</h2>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
+                {user?.role === 'ADMIN' ? 'Admin Overview' : user?.role === 'ADVISOR' ? 'Advisor Dashboard' : 'Your Portfolio'}
+              </h2>
+              <Badge className="bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+                {user?.role || 'USER'} PORTAL
+              </Badge>
+            </div>
+            
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {/* Total Investment */}
-              <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">Total Investment</p>
-                    <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">
-                      ₹{(investmentPortfolio.totalInvestment / 100000).toFixed(1)}L
-                    </p>
-                  </div>
-                  <Wallet className="h-8 w-8 text-[var(--color-accent)]/50" />
-                </div>
-              </Card>
+              {user?.role === 'ADMIN' ? (
+                // ADMIN METRICS
+                <>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Total Users</p>
+                        <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">24,592</p>
+                      </div>
+                      <Target className="h-8 w-8 text-[var(--color-accent)]/50" />
+                    </div>
+                  </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Active Advisors</p>
+                        <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">1,204</p>
+                      </div>
+                      <Settings className="h-8 w-8 text-[var(--color-accent)]/50" />
+                    </div>
+                  </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Platform AUM</p>
+                        <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">₹5,420Cr</p>
+                      </div>
+                      <Wallet className="h-8 w-8 text-[var(--color-accent)]/50" />
+                    </div>
+                  </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Daily Revenue</p>
+                        <p className="mt-2 text-2xl font-bold text-green-600">+₹4.2L</p>
+                      </div>
+                      <TrendingUp className="h-8 w-8 text-green-500/50" />
+                    </div>
+                  </Card>
+                </>
+              ) : user?.role === 'ADVISOR' ? (
+                // ADVISOR METRICS
+                <>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Active Clients</p>
+                        <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">142</p>
+                      </div>
+                      <Target className="h-8 w-8 text-[var(--color-accent)]/50" />
+                    </div>
+                  </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Client AUM</p>
+                        <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">₹12.5Cr</p>
+                      </div>
+                      <Wallet className="h-8 w-8 text-[var(--color-accent)]/50" />
+                    </div>
+                  </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Pending Reviews</p>
+                        <p className="mt-2 text-2xl font-bold text-orange-500">8</p>
+                      </div>
+                      <Settings className="h-8 w-8 text-orange-500/50" />
+                    </div>
+                  </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Client Returns (Avg)</p>
+                        <p className="mt-2 text-2xl font-bold text-green-600">+14.2%</p>
+                      </div>
+                      <TrendingUp className="h-8 w-8 text-green-500/50" />
+                    </div>
+                  </Card>
+                </>
+              ) : (
+                // USER / INVESTOR METRICS
+                <>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Total Investment</p>
+                        <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">
+                          ₹{(investmentPortfolio.totalInvestment / 100000).toFixed(1)}L
+                        </p>
+                      </div>
+                      <Wallet className="h-8 w-8 text-[var(--color-accent)]/50" />
+                    </div>
+                  </Card>
 
-              {/* Current Value */}
-              <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">Current Value</p>
-                    <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">
-                      ₹{(investmentPortfolio.currentValue / 100000).toFixed(1)}L
-                    </p>
-                  </div>
-                  <TrendingUp className="h-8 w-8 text-green-500/50" />
-                </div>
-              </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Current Value</p>
+                        <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">
+                          ₹{(investmentPortfolio.currentValue / 100000).toFixed(1)}L
+                        </p>
+                      </div>
+                      <TrendingUp className="h-8 w-8 text-green-500/50" />
+                    </div>
+                  </Card>
 
-              {/* Total Returns */}
-              <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">Total Returns</p>
-                    <p className="mt-2 text-2xl font-bold text-green-600">
-                      +₹{(investmentPortfolio.returns / 1000).toFixed(0)}K
-                    </p>
-                    <Badge className="mt-2 bg-green-500/20 text-green-700" variant="outline">
-                      +{investmentPortfolio.returnPercentage.toFixed(2)}%
-                    </Badge>
-                  </div>
-                  <DollarSign className="h-8 w-8 text-green-500/50" />
-                </div>
-              </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Total Returns</p>
+                        <p className="mt-2 text-2xl font-bold text-green-600">
+                          +₹{(investmentPortfolio.returns / 1000).toFixed(0)}K
+                        </p>
+                        <Badge className="mt-2 bg-green-500/20 text-green-700" variant="outline">
+                          +{investmentPortfolio.returnPercentage.toFixed(2)}%
+                        </Badge>
+                      </div>
+                      <DollarSign className="h-8 w-8 text-green-500/50" />
+                    </div>
+                  </Card>
 
-              {/* Active Funds */}
-              <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">Invested Funds</p>
-                    <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">
-                      {investmentPortfolio.funds}
-                    </p>
-                    <p className="mt-2 text-xs text-[var(--color-text-secondary)]">across different categories</p>
-                  </div>
-                  <Target className="h-8 w-8 text-[var(--color-accent)]/50" />
-                </div>
-              </Card>
+                  <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Invested Funds</p>
+                        <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">
+                          {investmentPortfolio.funds}
+                        </p>
+                        <p className="mt-2 text-xs text-[var(--color-text-secondary)]">across different categories</p>
+                      </div>
+                      <Target className="h-8 w-8 text-[var(--color-accent)]/50" />
+                    </div>
+                  </Card>
+                </>
+              )}
             </div>
           </div>
 
