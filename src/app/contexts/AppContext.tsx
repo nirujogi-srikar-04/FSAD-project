@@ -32,6 +32,7 @@ interface AppContextType {
   selectedFunds: string[];
   toggleFundSelection: (fundId: string) => void;
   clearSelectedFunds: () => void;
+  setUserRole: (role: UserRole) => void;
 }
 
 const AUTH_STORAGE_KEY = 'fundinsight_session';
@@ -130,7 +131,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
       const response = await fetch(`${baseUrl}/api/v1/users/change-password`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
@@ -151,7 +152,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
       const response = await fetch(`${baseUrl}/api/v1/users/delete-account`, {
         method: 'DELETE',
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`
         },
       });
@@ -176,7 +177,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     <AppContext.Provider value={{
       user, token, isAuthenticated: !!user, login, requestOtp, register, logout, userRole,
       changePassword, deleteAccount,
-      selectedFunds, toggleFundSelection, clearSelectedFunds
+      selectedFunds, toggleFundSelection, clearSelectedFunds,
+      setUserRole: setUserRoleState
     }}>
       {children}
     </AppContext.Provider>

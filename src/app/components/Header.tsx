@@ -13,7 +13,7 @@ import {
 } from './ui/dropdown-menu';
 
 export function Header() {
-  const { user, logout, userRole } = useApp();
+  const { user, logout, userRole, setUserRole } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -144,6 +144,7 @@ export function Header() {
                     <DropdownMenuItem
                       key={role.value}
                       onClick={() => {
+                        setUserRole(role.value);
                         navigate('/');
                       }}
                       className="cursor-pointer text-white focus:bg-white/10"
