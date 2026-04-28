@@ -6,13 +6,13 @@ import { Button } from '../components/ui/button';
 import { BookOpen, TrendingUp, Users, Settings, Plus, FileText, CheckCircle } from 'lucide-react';
 
 export function EducationPage() {
-  const { user } = useApp();
+  const { userRole } = useApp();
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] py-8 md:py-12">
       <div className="container mx-auto max-w-[var(--container-max)] px-4">
         
-        {user?.role === 'ADMIN' ? (
+        {userRole === 'ADMIN' ? (
           // ----------------------------------------------------
           // ADMIN: Content Management view
           // ----------------------------------------------------
@@ -64,7 +64,7 @@ export function EducationPage() {
             </div>
           </div>
 
-        ) : user?.role === 'ADVISOR' ? (
+        ) : userRole === 'ADVISOR' ? (
           // ----------------------------------------------------
           // ADVISOR: Resources and Market Strategies view
           // ----------------------------------------------------

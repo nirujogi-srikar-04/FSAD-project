@@ -9,7 +9,7 @@ import { Badge } from '../components/ui/badge';
 import { TrendingUp, Wallet, Target, DollarSign, Settings, LogOut } from 'lucide-react';
 
 export function DashboardPage() {
-  const { user, logout } = useApp();
+  const { user, userRole } = useApp();
   const navigate = useNavigate();
   const [investmentPortfolio] = useState({
     totalInvestment: 450000,
@@ -49,15 +49,15 @@ export function DashboardPage() {
           <div className="mb-8">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                {user?.role === 'ADMIN' ? 'Admin Overview' : user?.role === 'ADVISOR' ? 'Advisor Dashboard' : 'Your Portfolio'}
+                {userRole === 'ADMIN' ? 'Admin Overview' : userRole === 'ADVISOR' ? 'Advisor Dashboard' : 'Your Portfolio'}
               </h2>
               <Badge className="bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
-                {user?.role || 'USER'} PORTAL
+                {userRole || 'USER'} PORTAL
               </Badge>
             </div>
             
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {user?.role === 'ADMIN' ? (
+              {userRole === 'ADMIN' ? (
                 // ADMIN METRICS
                 <>
                   <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
@@ -97,7 +97,7 @@ export function DashboardPage() {
                     </div>
                   </Card>
                 </>
-              ) : user?.role === 'ADVISOR' ? (
+              ) : userRole === 'ADVISOR' ? (
                 // ADVISOR METRICS
                 <>
                   <Card className="border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-6 dark:border-white/10 dark:bg-white/5">
