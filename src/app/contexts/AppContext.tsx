@@ -70,7 +70,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${baseUrl}/api/v1/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -87,7 +88,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const requestOtp = async (email: string, name: string) => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/auth/request-otp', {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${baseUrl}/api/v1/auth/request-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, name }),
@@ -104,7 +106,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (email: string, otp: string, name: string, password: string, role: string, age?: number, phoneNumber?: string) => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/auth/register', {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${baseUrl}/api/v1/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp, name, password, role, age, phoneNumber }),
@@ -124,7 +127,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const changePassword = async (currentPassword: string, newPassword: string) => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/users/change-password', {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${baseUrl}/api/v1/users/change-password`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -144,7 +148,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const deleteAccount = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/users/delete-account', {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${baseUrl}/api/v1/users/delete-account`, {
         method: 'DELETE',
         headers: { 
           'Authorization': `Bearer ${token}`
